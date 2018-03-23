@@ -1,14 +1,16 @@
 const User = require('../models/userModels');
 const bcrypt = require('bcrypt');
 
-const createUser = (req, res) => {
+const createUser = async (req, res) => {
   const { username, password } = req.body;
   const user = new User({ username, password });
-  user.save()
-    .then(savedUser => res.json(savedUser))
-    .catch(err => res.json(err));
+  try {
+    const savedUser = await user.save();
+    res.json({ status: 'success', savedUser });
+  }
+  catch (err) {
+    res.json({ status: err });
+  };
 };
 
-module.exports = {
-  createUser
-};
+module.exports = { createUser };
