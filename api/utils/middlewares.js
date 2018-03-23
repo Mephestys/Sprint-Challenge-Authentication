@@ -3,22 +3,20 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const { mysecret } = require('../../config');
 
-const authenticate = (req, res, next) => {
-  // You won't need to change anything in this file here.
+const authenticate = async (req, res, next) => {
   const token = req.get('Authorization');
-  if (token) {
-    jwt.verify(token, mysecret, (err, decoded) => {
-      if (err) return res.status(422).json(err);
-      req.decoded = decoded;
-      next();
-    });
-  } else {
-    return res.status(403).json({
-      error: 'No token provided, must be set on the Authorization Header'
-    });
-  }
+  try {
+    if (token) {
+        req.decoded = await jwt.verify(token, mysecret);
+        next();
+    } else {
+      res.status(403).json({
+        error: 'No token provided, must be set on the Authorization Header'
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err });
+  };
 };
 
-module.exports = {
-  authenticate
-};
+module.exports = { authenticate };
