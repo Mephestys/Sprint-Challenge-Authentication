@@ -8,6 +8,7 @@ const server = express();
 const corsOptions = {
   origin: 'http://localhost:3000',
   credentials: true,
+  methods: 'GET, POST',
 };
 
 server.use(bodyParser.json());
